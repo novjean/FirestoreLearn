@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "158417212932",
+    "firebase_url": "https://firestorelearn-bdd1c.firebaseio.com",
+    "project_id": "firestorelearn-bdd1c",
+    "storage_bucket": "firestorelearn-bdd1c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158417212932:android:2ebfc458b0e77a0e888751",
+        "android_client_info": {
+          "package_name": "novatech.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "158417212932-5745j6poe40sjn58q26k0hbqc4m8edba.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "novatech.com",
+            "certificate_hash": "60180178f66d255ce65f89abedef7d135b1ad2f9"
+          }
+        },
+        {
+          "client_id": "158417212932-sg2pce4lgnql5bdenntbk80sqv1fbsu2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF1jgbUPRv4TlglUzAAFXv9tUJgxOX6jI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "158417212932-sg2pce4lgnql5bdenntbk80sqv1fbsu2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
