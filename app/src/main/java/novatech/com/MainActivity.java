@@ -20,6 +20,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText editTextTitle;
     private EditText editTextDescription;
+    private EditText editTextPriority;
     private TextView textViewData;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         editTextTitle = findViewById(R.id.edit_text_title);
         editTextDescription = findViewById(R.id.edit_text_description);
+        editTextPriority = findViewById(R.id.edit_text_priority);
         textViewData = findViewById(R.id.text_view_data);
     }
 
@@ -69,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
                     data += "ID: " + note.getDocumentId() + "\n"+
                             "Title: " + note.getTitle() + "\n" +
-                            "Description: " + note.getDescription() + "\n\n";
+                            "Description: " + note.getDescription() + "\n" +
+                            "Priority: " +note.getPriority() + "\n\n";
                 }
 
                 textViewData.setText(data);
@@ -104,25 +108,25 @@ public class MainActivity extends AppCompatActivity {
 //        note.put(KEY_TITLE, title);
 //        note.put(KEY_DESCRIPTION, description);
 
-        Note note = new Note(title, description);
+//        Note note = new Note(title, description, priority);
 
 //      noteRef.setNote()
-        db.collection("Notebook")
-                .document("My First Note")
-                .set(note)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(MainActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, e.toString());
-                }
-        });
+//        db.collection("Notebook")
+//                .document("My First Note")
+//                .set(note)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Toast.makeText(MainActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+//                    Log.d(TAG, e.toString());
+//                }
+//        });
     }
 
     public void updateDescription(View v){
@@ -183,14 +187,23 @@ public class MainActivity extends AppCompatActivity {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
 
-        Note note = new Note(title, description);
+        if(editTextPriority.length() == 0){
+            editTextPriority.setText("0");
+        }
+
+        int priority = Integer.parseInt(editTextPriority.getText().toString());
+
+        Note note = new Note(title, description, priority);
 
         // add success of failure listener
         notebookRef.add(note);
     }
 
     public void loadNotes(View v) {
-        notebookRef.get()
+        notebookRef.whereGreaterThanOrEqualTo("priority", 2)
+                .orderBy("priority", Query.Direction.DESCENDING)
+                .limit(2)
+                .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -201,7 +214,8 @@ public class MainActivity extends AppCompatActivity {
 
                             data += "ID: " + note.getDocumentId() + "\n"+
                                     "Title: " + note.getTitle() + "\n" +
-                                    "Description: " + note.getDescription() + "\n\n";
+                                    "Description: " + note.getDescription() + "\n" +
+                                    "Priority: " +note.getPriority() + "\n\n";
                         }
 
                         textViewData.setText(data);
