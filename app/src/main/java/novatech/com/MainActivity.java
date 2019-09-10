@@ -8,13 +8,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +46,28 @@ public class MainActivity extends AppCompatActivity {
         textViewData = findViewById(R.id.text_view_data);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        noteRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(e !=null){
+                    Toast.makeText(MainActivity.this, "Error while loading!", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, e.toString());
+                    return;
+                }
+
+                if(documentSnapshot.exists()){
+                    String title = documentSnapshot.getString(KEY_TITLE);
+                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
+
+                    textViewData.setText("Title: " + title + "\n" +"Description: " + description);
+                }
+            }
+        });
+    }
+
     public void saveNote(View v) {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
@@ -67,6 +93,18 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, e.toString());
                 }
         });
+    }
+
+    public void updateDescription(View v){
+        String description = editTextDescription.getText().toString();
+
+//        Map<String, Object> note = new HashMap<>();
+//        note.put(KEY_DESCRIPTION, description);
+
+//        noteRef.set(note, SetOptions.merge());
+//        noteRef.update(note);
+
+        noteRef.update(KEY_DESCRIPTION, description);
     }
 
     public void loadNote(View v){
